@@ -5,38 +5,33 @@ class ProductsController < ApplicationController
 
   def index
     @products = Product.all
+    render json: @products
   end
 
   def show
-  end
-
-  def new
-    @product = Product.new
+    render json: @product
   end
 
   def create
     @product = current_user.products.build(product_params)
     if @product.save
-      redirect_to @product, notice: 'Product was successfully created.'
+      render json: @product, status: :created
     else
-      render :new
+      render json: @product.errors, status: :unprocessable_entity
     end
-  end
-
-  def edit
   end
 
   def update
     if @product.update(product_params)
-      redirect_to @product, notice: 'Product was successfully updated.'
+      render json: @product
     else
-      render :edit
+      render json: @product.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
     @product.destroy
-    redirect_to products_url, notice: 'Product was successfully destroyed.'
+    head :no_content
   end
 
   private
